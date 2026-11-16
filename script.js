@@ -55,7 +55,8 @@ if ('IntersectionObserver' in window && !reduceMotion) {
     entries.forEach(entry => {
       if (entry.isIntersecting) {
         entry.target.classList.add('is-visible');
-        observer.unobserve(entry.target);
+      } else {
+        entry.target.classList.remove('is-visible');
       }
     });
   }, { threshold: 0.12, rootMargin: '0px 0px -45px 0px' });
