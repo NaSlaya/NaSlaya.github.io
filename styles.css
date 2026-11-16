@@ -44,3 +44,101 @@
 .project-back{display:inline-flex;align-items:center;gap:9px;color:#a8c7f6;font-size:12px;font-weight:700;margin-top:25px}
 @media(max-width:800px){.project-hero{grid-template-columns:1fr;padding-top:60px}.feature-grid{grid-template-columns:repeat(2,1fr)}.workflow-list{grid-template-columns:repeat(2,1fr)}}
 @media(max-width:600px){.project-hero{padding:48px 0 35px}.project-hero h1{font-size:43px}.project-hero p{font-size:13px}.project-facts{gap:7px}.project-fact{padding:12px}.project-fact strong{font-size:20px}.project-fact span{font-size:8px}.project-section{padding-top:58px}.project-section h2{font-size:27px}.feature-grid,.screen-grid,.database-panel{grid-template-columns:1fr}.feature-card{min-height:0}.workflow-list{gap:8px}.workflow-step{padding:14px}.database-numbers{gap:8px}}
+
+
+/* Readability and shorter-page refinement */
+body{font-size:16px;line-height:1.6}
+.section-wrap,.site-header{width:min(1160px,calc(100% - 56px))}
+.nav{font-size:14px}
+.brand{font-size:14px}
+.hero{min-height:520px;padding-top:42px;padding-bottom:48px}
+.hero-lead{font-size:17px;line-height:1.75}
+.button{font-size:14px;padding:14px 19px}
+.text-link{font-size:14px}
+.hero-meta{font-size:11px;margin-top:35px}
+.section{padding-top:78px}
+.section-heading{margin-bottom:25px}
+.section-heading h2{font-size:40px}
+.about-lead{font-size:27px}
+.about-copy{font-size:15px;line-height:1.8}
+.project-info h3{font-size:30px}
+.project-info p{font-size:14px;line-height:1.75}
+.project-number,.section-index{font-size:11px}
+.tag-list span{font-size:10px}
+.project-footnote{font-size:10px}
+.compact .project-info h3{font-size:19px}
+.compact .project-info p{font-size:13px}
+.disclaimer{font-size:11px}
+.section-intro{font-size:15px}
+.skill-box{padding:18px}
+.skill-box h3{font-size:14px}
+.skill-box p{font-size:13px;line-height:1.7}
+.learning-banner h3{font-size:20px}
+.learning-banner p,.contact-panel p{font-size:14px}
+.contact-panel h3{font-size:20px}
+.footer{font-size:12px}
+.project-hero{padding:60px 0 38px;gap:32px}
+.project-hero h1{font-size:clamp(48px,5.5vw,70px)}
+.project-hero p{font-size:17px;line-height:1.75}
+.project-fact strong{font-size:27px}
+.project-fact span{font-size:10px}
+.project-section{padding:52px 0 0}
+.project-section h2{font-size:37px}
+.project-section-intro{font-size:15px;line-height:1.75;margin-bottom:20px}
+.feature-grid{gap:11px}
+.feature-card{padding:17px;min-height:155px}
+.feature-card h3{font-size:16px;margin:10px 0 6px}
+.feature-card p{font-size:13px;line-height:1.65}
+.screen-caption{padding:15px 17px}
+.screen-caption h3{font-size:16px}
+.screen-caption p{font-size:13px;line-height:1.65}
+.workflow-step{padding:16px}
+.workflow-step h3{font-size:14px}
+.workflow-step p{font-size:12px;line-height:1.65}
+.database-panel{padding:21px}
+.database-numbers strong{font-size:32px}
+.database-numbers span{font-size:10px}
+.note-small{font-size:12px}
+.project-back{font-size:14px}
+@media(max-width:800px){
+ .section{padding-top:62px}
+ .project-hero{padding-top:48px}
+ .project-section{padding-top:44px}
+ .feature-card{min-height:0}
+}
+@media(max-width:600px){
+ .section-wrap,.site-header{width:min(100% - 34px,1160px)}
+ .hero{padding-top:42px;padding-bottom:35px}
+ .hero h1{font-size:clamp(42px,10vw,49px)}
+ .hero-lead{font-size:15px;line-height:1.7}
+ .button,.text-link{font-size:13px}
+ .section{padding-top:54px}
+ .section-heading{margin-bottom:20px}
+ .section-heading h2{font-size:33px}
+ .about-lead{font-size:23px}
+ .about-copy{font-size:14px}
+ .project-info h3{font-size:26px}
+ .project-info p{font-size:14px}
+ .compact .project-info h3{font-size:17px}
+ .compact .project-info p{font-size:12px}
+ .skill-box h3{font-size:13px}
+ .skill-box p{font-size:12px}
+ .learning-banner h3,.contact-panel h3{font-size:17px}
+ .learning-banner p,.contact-panel p{font-size:13px}
+ .project-hero{padding:38px 0 26px;gap:22px}
+ .project-hero h1{font-size:44px}
+ .project-hero p{font-size:15px;line-height:1.7}
+ .project-section{padding-top:38px}
+ .project-section h2{font-size:30px}
+ .project-section-intro{font-size:14px;line-height:1.7}
+ .feature-grid,.screen-grid,.database-panel{grid-template-columns:1fr}
+ .feature-card{padding:16px}
+ .feature-card h3{font-size:15px}
+ .feature-card p,.screen-caption p{font-size:13px}
+ .screen-caption h3{font-size:15px}
+ .workflow-step h3{font-size:13px}
+ .workflow-step p{font-size:11px}
+ .project-fact{padding:11px}
+ .project-fact strong{font-size:21px}
+ .project-fact span{font-size:8px}
+}
