@@ -1,144 +1,90 @@
-// PartPilot portfolio interactions and motion
-const toggle = document.getElementById('menuToggle');
-const nav = document.getElementById('nav');
+(() => {
+  const body = document.body;
+  const toggle = document.getElementById('menuToggle');
+  const nav = document.getElementById('nav');
 
-if (toggle && nav) {
-  toggle.addEventListener('click', () => {
-    const open = nav.classList.toggle('open');
-    toggle.setAttribute('aria-expanded', String(open));
-    toggle.setAttribute('aria-label', open ? 'Close navigation' : 'Open navigation');
-    toggle.textContent = open ? '×' : '☰';
-  });
-
-  nav.querySelectorAll('a').forEach(link => link.addEventListener('click', () => {
-    nav.classList.remove('open');
-    toggle.setAttribute('aria-expanded', 'false');
-    toggle.setAttribute('aria-label', 'Open navigation');
-    toggle.textContent = '☰';
-  }));
-}
-
-// Scroll progress indicator
-const progress = document.createElement('div');
-progress.className = 'scroll-progress';
-progress.setAttribute('aria-hidden', 'true');
-document.body.appendChild(progress);
-
-const updateProgress = () => {
-  const scrollable = document.documentElement.scrollHeight - window.innerHeight;
-  const amount = scrollable > 0 ? (window.scrollY / scrollable) * 100 : 0;
-  progress.style.width = amount + '%';
-};
-window.addEventListener('scroll', updateProgress, { passive: true });
-window.addEventListener('resize', updateProgress);
-updateProgress();
-
-// Reveal sections and cards as they enter the viewport
-const motionItems = document.querySelectorAll(
-  '.hero-copy, .hero-visual, .stats, .section-heading, .about-lead, .about-copy, ' +
-  '.project-card, .project-grid > *, .screen-card, .feature-card, .workflow-step, ' +
-  '.database-panel, .skill-box, .learning-banner, .contact-panel, .project-fact, .footer'
-);
-document.body.classList.add('js-motion');
-motionItems.forEach((item, index) => {
-  item.classList.add('reveal');
-  if (index % 5 === 1) item.classList.add('reveal-scale');
-  if (index % 7 === 3) item.classList.add('reveal-left');
-  if (item.parentElement && item.parentElement.children.length > 1) {
-    item.style.setProperty('--stagger-delay', (Array.from(item.parentElement.children).indexOf(item) * 85) + 'ms');
+  if (toggle && nav) {
+    toggle.addEventListener('click', () => {
+      const open = nav.classList.toggle('open');
+      toggle.setAttribute('aria-expanded', String(open));
+      toggle.setAttribute('aria-label', open ? 'Close navigation' : 'Open navigation');
+    });
+    nav.querySelectorAll('a').forEach(link => link.addEventListener('click', () => {
+      nav.classList.remove('open');
+      toggle.setAttribute('aria-expanded', 'false');
+    }));
   }
-});
 
-const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-if ('IntersectionObserver' in window && !reduceMotion) {
-  const revealObserver = new IntersectionObserver((entries, observer) => {
-    entries.forEach(entry => {
-      if (entry.isIntersecting) {
-        entry.target.classList.add('is-visible');
-      } else {
-        entry.target.classList.remove('is-visible');
-      }
-    });
-  }, { threshold: 0.12, rootMargin: '0px 0px -45px 0px' });
-  motionItems.forEach(item => revealObserver.observe(item));
-} else {
-  motionItems.forEach(item => item.classList.add('is-visible'));
-}
-
-// Soft pointer-following glow on interactive cards (desktop only)
-const glowCards = document.querySelectorAll('.project-card, .screen-card, .feature-card, .skill-box');
-glowCards.forEach(card => {
-  card.addEventListener('pointermove', event => {
-    if (event.pointerType === 'touch') return;
-    const rect = card.getBoundingClientRect();
-    card.style.setProperty('--pointer-x', (event.clientX - rect.left) + 'px');
-    card.style.setProperty('--pointer-y', (event.clientY - rect.top) + 'px');
-  });
-});
-
-// Expand screenshots into a full-screen, contained image viewer
-const screenshots = document.querySelectorAll('.screen-card img');
-if (screenshots.length) {
-  const lightbox = document.createElement('div');
-  lightbox.className = 'image-lightbox';
-  lightbox.setAttribute('role', 'dialog');
-  lightbox.setAttribute('aria-modal', 'true');
-  lightbox.setAttribute('aria-label', 'Screenshot viewer');
-  lightbox.innerHTML = '<button class="lightbox-close" type="button" aria-label="Close image">×</button><img alt=""><span class="lightbox-hint">TAP OUTSIDE OR PRESS ESC TO CLOSE</span>';
-  document.body.appendChild(lightbox);
-  const largeImage = lightbox.querySelector('img');
-  const closeButton = lightbox.querySelector('.lightbox-close');
-  let previousFocus = null;
-
-  const closeLightbox = () => {
-    lightbox.classList.remove('open');
-    document.body.style.overflow = '';
-    if (previousFocus) previousFocus.focus();
+  const progress = document.querySelector('.scroll-progress span');
+  let scrollTicking = false;
+  const updateProgress = () => {
+    if (!progress) return;
+    const max = document.documentElement.scrollHeight - window.innerHeight;
+    progress.style.width = (max > 0 ? window.scrollY / max * 100 : 0) + '%';
+    scrollTicking = false;
   };
-  const openLightbox = image => {
-    previousFocus = document.activeElement;
-    largeImage.src = image.currentSrc || image.src;
-    largeImage.alt = image.alt || 'Expanded project screenshot';
-    lightbox.classList.add('open');
-    document.body.style.overflow = 'hidden';
-    closeButton.focus();
-  };
+  window.addEventListener('scroll', () => {
+    if (!scrollTicking) {
+      requestAnimationFrame(updateProgress);
+      scrollTicking = true;
+    }
+  }, { passive: true });
+  updateProgress();
 
-  screenshots.forEach(image => {
-    image.tabIndex = 0;
-    image.setAttribute('role', 'button');
-    image.setAttribute('aria-label', 'Enlarge screenshot: ' + (image.alt || 'project screenshot'));
-    image.addEventListener('click', () => openLightbox(image));
-    image.addEventListener('keydown', event => {
-      if (event.key === 'Enter' || event.key === ' ') {
-        event.preventDefault();
-        openLightbox(image);
-      }
+  const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const revealItems = document.querySelectorAll('.reveal');
+  if ('IntersectionObserver' in window && !reduceMotion) {
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+          observer.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.12, rootMargin: '0px 0px -35px 0px' });
+    revealItems.forEach(item => observer.observe(item));
+  } else {
+    revealItems.forEach(item => item.classList.add('visible'));
+  }
+
+  const glow = document.querySelector('.cursor-glow');
+  if (glow && window.matchMedia('(hover:hover) and (pointer:fine)').matches) {
+    body.classList.add('has-pointer');
+    let pointerX = -500, pointerY = -500, glowX = -500, glowY = -500;
+    window.addEventListener('pointermove', event => {
+      pointerX = event.clientX;
+      pointerY = event.clientY;
+    }, { passive: true });
+    const followPointer = () => {
+      glowX += (pointerX - glowX) * .12;
+      glowY += (pointerY - glowY) * .12;
+      glow.style.left = glowX + 'px';
+      glow.style.top = glowY + 'px';
+      requestAnimationFrame(followPointer);
+    };
+    requestAnimationFrame(followPointer);
+  }
+
+  // Subtle 3D tilt, enabled only on pointer devices and disabled for reduced motion.
+  if (!reduceMotion && window.matchMedia('(hover:hover) and (pointer:fine)').matches) {
+    document.querySelectorAll('[data-tilt]').forEach(card => {
+      card.addEventListener('pointermove', event => {
+        const rect = card.getBoundingClientRect();
+        const x = (event.clientX - rect.left) / rect.width - .5;
+        const y = (event.clientY - rect.top) / rect.height - .5;
+        card.style.transform = 'perspective(1100px) rotateX(' + (-y * 2.2) + 'deg) rotateY(' + (x * 2.2) + 'deg) translateY(-3px)';
+      });
+      card.addEventListener('pointerleave', () => {
+        card.style.transform = '';
+      });
     });
-  });
-  closeButton.addEventListener('click', closeLightbox);
-  lightbox.addEventListener('click', event => {
-    if (event.target === lightbox) closeLightbox();
-  });
+  }
+
+  // Close the mobile menu when Escape is pressed.
   document.addEventListener('keydown', event => {
-    if (event.key === 'Escape' && lightbox.classList.contains('open')) closeLightbox();
-  });
-}
-
-// Feature cards respond to clicks with a polished focus/selection state
-document.querySelectorAll('.feature-card').forEach(card => {
-  card.tabIndex = 0;
-  card.setAttribute('role', 'button');
-  card.setAttribute('aria-pressed', 'false');
-  const activate = () => {
-    const active = card.classList.toggle('is-expanded');
-    card.setAttribute('aria-pressed', String(active));
-  };
-  card.addEventListener('click', activate);
-  card.addEventListener('keydown', event => {
-    if (event.key === 'Enter' || event.key === ' ') {
-      event.preventDefault();
-      activate();
+    if (event.key === 'Escape' && nav && toggle) {
+      nav.classList.remove('open');
+      toggle.setAttribute('aria-expanded', 'false');
     }
   });
-});
+})();
