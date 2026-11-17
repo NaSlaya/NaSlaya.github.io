@@ -1,90 +1,15 @@
 (() => {
-  const body = document.body;
-  const toggle = document.getElementById('menuToggle');
-  const nav = document.getElementById('nav');
-
-  if (toggle && nav) {
-    toggle.addEventListener('click', () => {
-      const open = nav.classList.toggle('open');
-      toggle.setAttribute('aria-expanded', String(open));
-      toggle.setAttribute('aria-label', open ? 'Close navigation' : 'Open navigation');
-    });
-    nav.querySelectorAll('a').forEach(link => link.addEventListener('click', () => {
-      nav.classList.remove('open');
-      toggle.setAttribute('aria-expanded', 'false');
-    }));
-  }
-
-  const progress = document.querySelector('.scroll-progress span');
-  let scrollTicking = false;
-  const updateProgress = () => {
-    if (!progress) return;
-    const max = document.documentElement.scrollHeight - window.innerHeight;
-    progress.style.width = (max > 0 ? window.scrollY / max * 100 : 0) + '%';
-    scrollTicking = false;
-  };
-  window.addEventListener('scroll', () => {
-    if (!scrollTicking) {
-      requestAnimationFrame(updateProgress);
-      scrollTicking = true;
-    }
-  }, { passive: true });
-  updateProgress();
-
-  const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  const revealItems = document.querySelectorAll('.reveal');
-  if ('IntersectionObserver' in window && !reduceMotion) {
-    const observer = new IntersectionObserver((entries) => {
-      entries.forEach(entry => {
-        if (entry.isIntersecting) {
-          entry.target.classList.add('visible');
-          observer.unobserve(entry.target);
-        }
-      });
-    }, { threshold: 0.12, rootMargin: '0px 0px -35px 0px' });
-    revealItems.forEach(item => observer.observe(item));
-  } else {
-    revealItems.forEach(item => item.classList.add('visible'));
-  }
-
-  const glow = document.querySelector('.cursor-glow');
-  if (glow && window.matchMedia('(hover:hover) and (pointer:fine)').matches) {
-    body.classList.add('has-pointer');
-    let pointerX = -500, pointerY = -500, glowX = -500, glowY = -500;
-    window.addEventListener('pointermove', event => {
-      pointerX = event.clientX;
-      pointerY = event.clientY;
-    }, { passive: true });
-    const followPointer = () => {
-      glowX += (pointerX - glowX) * .12;
-      glowY += (pointerY - glowY) * .12;
-      glow.style.left = glowX + 'px';
-      glow.style.top = glowY + 'px';
-      requestAnimationFrame(followPointer);
-    };
-    requestAnimationFrame(followPointer);
-  }
-
-  // Subtle 3D tilt, enabled only on pointer devices and disabled for reduced motion.
-  if (!reduceMotion && window.matchMedia('(hover:hover) and (pointer:fine)').matches) {
-    document.querySelectorAll('[data-tilt]').forEach(card => {
-      card.addEventListener('pointermove', event => {
-        const rect = card.getBoundingClientRect();
-        const x = (event.clientX - rect.left) / rect.width - .5;
-        const y = (event.clientY - rect.top) / rect.height - .5;
-        card.style.transform = 'perspective(1100px) rotateX(' + (-y * 2.2) + 'deg) rotateY(' + (x * 2.2) + 'deg) translateY(-3px)';
-      });
-      card.addEventListener('pointerleave', () => {
-        card.style.transform = '';
-      });
-    });
-  }
-
-  // Close the mobile menu when Escape is pressed.
-  document.addEventListener('keydown', event => {
-    if (event.key === 'Escape' && nav && toggle) {
-      nav.classList.remove('open');
-      toggle.setAttribute('aria-expanded', 'false');
-    }
-  });
+const body=document.body,toggle=document.getElementById('menuToggle'),nav=document.getElementById('nav');
+if(toggle&&nav){toggle.addEventListener('click',()=>{const open=nav.classList.toggle('open');toggle.setAttribute('aria-expanded',String(open));toggle.setAttribute('aria-label',open?'Close navigation':'Open navigation')});nav.querySelectorAll('a').forEach(a=>a.addEventListener('click',()=>{nav.classList.remove('open');toggle.setAttribute('aria-expanded','false')}))}
+const progress=document.querySelector('.scroll-progress span');let ticking=false;const update=()=>{if(progress){const max=document.documentElement.scrollHeight-innerHeight;progress.style.width=(max>0?scrollY/max*100:0)+'%'}ticking=false};addEventListener('scroll',()=>{if(!ticking){requestAnimationFrame(update);ticking=true}},{passive:true});update();
+const reduce=matchMedia('(prefers-reduced-motion: reduce)').matches,items=document.querySelectorAll('.reveal');
+if('IntersectionObserver'in window&&!reduce){const observer=new IntersectionObserver(entries=>entries.forEach(e=>{if(e.isIntersecting){e.target.classList.add('visible');observer.unobserve(e.target)}}),{threshold:.12,rootMargin:'0px 0px -35px 0px'});items.forEach(x=>observer.observe(x))}else items.forEach(x=>x.classList.add('visible'));
+const glow=document.querySelector('.cursor-glow');if(glow&&matchMedia('(hover:hover) and (pointer:fine)').matches){body.classList.add('has-pointer');let x=-500,y=-500,gx=-500,gy=-500;addEventListener('pointermove',e=>{x=e.clientX;y=e.clientY},{passive:true});const follow=()=>{gx+=(x-gx)*.12;gy+=(y-gy)*.12;glow.style.left=gx+'px';glow.style.top=gy+'px';requestAnimationFrame(follow)};requestAnimationFrame(follow)}
+const projects=[{type:'FEATURED PROJECT / 001',status:'● IN DEVELOPMENT',title:'PartPilot.',desc:'A PC research and building assistant for component research, compatibility checks, upgrade discovery and Australian price comparisons.',tags:['SOFTWARE','PC HARDWARE','RESEARCH'],href:'partpilot.html',label:'EXPLORE PROJECT ↗'},{type:'PLANNED PROJECT / 002',status:'● FUTURE MISSION',title:'Net / Orbit.',desc:'A network diagnostics toolkit exploring connection quality, latency, packet loss and practical troubleshooting in one clear workspace.',tags:['NETWORKING','DIAGNOSTICS','TOOLS'],href:'#contact',label:'PROJECT CONCEPT ↗'},{type:'PLANNED PROJECT / 003',status:'● FUTURE MISSION',title:'Flow State.',desc:'A collection of small automation tools designed to remove repetitive tasks, simplify everyday workflows and make technology work smarter.',tags:['AUTOMATION','SCRIPTING','PRODUCTIVITY'],href:'#contact',label:'PROJECT CONCEPT ↗'}];
+const slides=[...document.querySelectorAll('.planet-slide')],dots=[...document.querySelectorAll('.universe-dot')];let current=0,sx=0,sy=0;
+const show=n=>{current=(n+3)%3;slides.forEach((s,i)=>{s.classList.toggle('active',i===current);s.setAttribute('aria-hidden',String(i!==current))});dots.forEach((d,i)=>{d.classList.toggle('active',i===current);d.setAttribute('aria-pressed',String(i===current))});const p=projects[current];document.getElementById('planetCounter').textContent='0'+(current+1)+' / 03';document.getElementById('detailType').textContent=p.type;document.getElementById('detailStatus').textContent=p.status;document.getElementById('detailTitle').textContent=p.title;document.getElementById('detailDescription').textContent=p.desc;const tags=document.getElementById('detailTags');tags.replaceChildren(...p.tags.map(t=>{const s=document.createElement('span');s.textContent=t;return s}));const link=document.getElementById('detailLink');link.href=p.href;link.textContent=p.label};
+document.getElementById('planetPrev')?.addEventListener('click',()=>show(current-1));document.getElementById('planetNext')?.addEventListener('click',()=>show(current+1));dots.forEach(d=>d.addEventListener('click',()=>show(Number(d.dataset.go))));
+const stage=document.getElementById('universeStage');if(stage){stage.addEventListener('keydown',e=>{if(e.key==='ArrowLeft'){e.preventDefault();show(current-1)}if(e.key==='ArrowRight'){e.preventDefault();show(current+1)}});stage.addEventListener('touchstart',e=>{sx=e.changedTouches[0].clientX;sy=e.changedTouches[0].clientY},{passive:true});stage.addEventListener('touchend',e=>{const dx=e.changedTouches[0].clientX-sx,dy=e.changedTouches[0].clientY-sy;if(Math.abs(dx)>45&&Math.abs(dx)>Math.abs(dy)*1.2)show(current+(dx<0?1:-1))},{passive:true})}
+document.addEventListener('keydown',e=>{if(e.key==='Escape'&&nav&&toggle){nav.classList.remove('open');toggle.setAttribute('aria-expanded','false')}});
+show(0);
 })();
