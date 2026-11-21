@@ -328,3 +328,25 @@ body{background:#090505;color:#f7f2ef}
 @media(prefers-reduced-motion:reduce){
  .cursor-glow,.sculpture,.ticker-track,.planet-body,.planet-ring,.planet-moon,.planet-orbit{animation:none!important}
 }
+
+
+/* Signature chrome chain motif */
+.hero-art::before{
+ content:"";position:absolute;z-index:3;left:-12%;top:47%;width:125%;height:34px;
+ background:
+ radial-gradient(ellipse 17px 10px at 50% 50%,transparent 48%,#e5e8ed 54%,#707783 65%,#252a32 76%,transparent 82%) 0 0/34px 24px repeat-x;
+ filter:drop-shadow(0 0 7px #31d8ff88) drop-shadow(0 5px 8px #000);
+ transform:rotate(-22deg);opacity:.76;pointer-events:none;
+}
+.hero-art::after{
+ content:"";position:absolute;z-index:2;left:-8%;top:48%;width:120%;height:2px;
+ background:linear-gradient(90deg,transparent,#31d8ff,#f22d38,transparent);
+ box-shadow:0 0 18px #31d8ff;transform:rotate(-22deg);opacity:.5;pointer-events:none;
+}
+.project-page .project-hero-art{position:relative}
+.project-page .project-hero-art:after{
+ content:"";position:absolute;z-index:2;left:-8%;top:48%;width:116%;height:20px;pointer-events:none;
+ background:radial-gradient(ellipse 13px 8px at 50% 50%,transparent 48%,#e4e9f0 55%,#5c6574 68%,#202631 78%,transparent 84%) 0 0/28px 20px repeat-x;
+ filter:drop-shadow(0 0 8px #31d8ff);transform:rotate(-17deg);opacity:.65;
+}
+@media(max-width:700px){.hero-art::before{top:48%;opacity:.5}.project-page .project-hero-art:after{opacity:.35}}
